@@ -24,3 +24,20 @@
   apt:
     name: zabbix-agent2-plugin-mssql
   become: true
+
+- name: genernate pre-shared key
+  shell: "openssl rand -hex 32 > /etc/zabbix/zabbix_agent2.psk"
+  creates: /etc/zabbix/zabbix_agnet2.psk
+  args:
+    executable: /bin//bash
+
+- name: configuration file to connect to zabbix server
+  template:
+    src: templates/zabbix_agent2.conf.j2
+    dest: /etc/zabbix/zabbix_agent2.conf
+  become: true
+
+- name: restart zabbix agent2
+  systemd_service:
+    state: restarted
+    name: zabbix-agent2
