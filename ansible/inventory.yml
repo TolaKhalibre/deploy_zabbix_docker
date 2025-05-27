@@ -1,0 +1,11 @@
+---
+
+all:
+  hosts:
+    localhost:
+      ansible_connection: local
+    vagrant01:
+      ansible_host: 127.0.0.1
+      ansible_port: 2222
+      ansible_user: vagrant
+      ansible_ssh_private_key_file: ~/Documents/vagrant/ubuntu24-test/.vagrant/machines/default/virtualbox/private_key

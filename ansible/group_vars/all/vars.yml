@@ -1,0 +1,6 @@
+---
+
+deploy_zabbix_repo: https://repo.zabbix.com/zabbix/7.2/release/{{ ansible_distribution | lower }}/pool/main/z/zabbix-release/zabbix-release_latest_7.2+{{ ansible_distribution | lower }}{{ ansible_distribution_version }}_all.deb
+deploy_zabbix_file: zabbix-release_latest_7.2+{{ ansible_distribution | lower }}{{ ansible_distribution_version }}_all.deb
+
+

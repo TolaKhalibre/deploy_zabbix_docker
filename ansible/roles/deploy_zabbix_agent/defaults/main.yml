@@ -1,0 +1,5 @@
+---
+
+zabbix_deb_url: "{{ deploy_zabbix_repo }}"
+zabbix_file_install: "{{ deploy_zabbix_file }}"
+

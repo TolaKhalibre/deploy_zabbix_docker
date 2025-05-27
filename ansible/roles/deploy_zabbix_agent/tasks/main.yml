@@ -1,0 +1,8 @@
+---
+
+- name: install zabbix-agent & configuration
+  import_tasks: installations.yml
+
+- name: uninstall zabbix-agent
+  import_tasks: uninstall.yml
+  tags: never

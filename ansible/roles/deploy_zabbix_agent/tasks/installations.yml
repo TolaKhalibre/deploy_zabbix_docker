@@ -1,0 +1,26 @@
+---
+
+- name: Download Zabbix 7.2 latest
+  get_url:
+    url: '{{ zabbix_deb_url }}'
+    dest: /tmp/
+
+- name: install zabbix agent file
+  apt:
+    deb: /tmp/{{ zabbix_file_install }}
+  become: true
+
+- name: apt-get update
+  apt:
+    update_cache: true
+  become: true
+
+- name: install zabbix agent2
+  apt:
+    name: zabbix-agent2
+  become: true
+
+- name: install zabbix agent2 plugins
+  apt:
+    name: zabbix-agent2-plugin-mssql
+  become: true
