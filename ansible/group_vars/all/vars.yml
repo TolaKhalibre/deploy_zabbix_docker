@@ -1,0 +1,7 @@
+---
+
+deploy_username: "{{ ansible_user }}"
+deploy_zabbix_repo: https://repo.zabbix.com/zabbix/7.2/release/{{ ansible_distribution | lower }}/pool/main/z/zabbix-release/zabbix-release_latest_7.2+{{ ansible_distribution | lower }}{{ ansible_distribution_version }}_all.deb
+deploy_zabbix_file: zabbix-release_latest_7.2+{{ ansible_distribution | lower }}{{ ansible_distribution_version }}_all.deb
+deploy_zabbix_server_ip_address: 192.168.241.59
+deploy_zabbix_ip_allow: 192.168.56.1

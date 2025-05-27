@@ -1,0 +1,8 @@
+---
+
+local_username: "{{ deploy_username }}"
+zabbix_deb_url: "{{ deploy_zabbix_repo }}"
+zabbix_file_install: "{{ deploy_zabbix_file }}"
+zabbix_server_ipv4: "{{ deploy_zabbix_server_ip_address }}"
+zabbix_agent_allow_address: "{{ deploy_zabbix_ip_allow }}"
+

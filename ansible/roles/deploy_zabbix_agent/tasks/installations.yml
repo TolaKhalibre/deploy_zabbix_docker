@@ -1,0 +1,43 @@
+---
+
+- name: Download Zabbix 7.2 latest
+  get_url:
+    url: '{{ zabbix_deb_url }}'
+    dest: /tmp/
+
+- name: install zabbix agent file
+  apt:
+    deb: /tmp/{{ zabbix_file_install }}
+  become: true
+
+- name: apt-get update
+  apt:
+    update_cache: true
+  become: true
+
+- name: install zabbix agent2
+  apt:
+    name: zabbix-agent2
+  become: true
+
+- name: install zabbix agent2 plugins
+  apt:
+    name: zabbix-agent2-plugin-mssql
+  become: true
+
+- name: genernate pre-shared key
+  shell: "openssl rand -hex 32 > /etc/zabbix/zabbix_agent2.psk"
+  creates: /etc/zabbix/zabbix_agnet2.psk
+  args:
+    executable: /bin//bash
+
+- name: configuration file to connect to zabbix server
+  template:
+    src: templates/zabbix_agent2.conf.j2
+    dest: /etc/zabbix/zabbix_agent2.conf
+  become: true
+
+- name: restart zabbix agent2
+  systemd_service:
+    state: restarted
+    name: zabbix-agent2

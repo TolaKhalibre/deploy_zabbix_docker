@@ -11,8 +11,8 @@ services:
     volumes:
       - mysql-data:/var/lib/mysql/data
       - ./my.cnf:/etc/mysql/conf.d/my.cnf
-    networks:
-      - zabbix-ipv4
+    # networks:
+    #   - zabbix-ipv4
 
   zabbix-server:
     image: zabbix/zabbix-server-mysql:latest
@@ -32,9 +32,9 @@ services:
       - zabbix-server-data:/var/lib/zabbix
       - zabbix-snmptraps-data:/var/lib/zabbix/snmptraps
       - zabbix-export-data:/var/lib/zabbix/export
-    networks:
-      zabbix-ipv4:
-        ipv4_address: 10.10.1.10
+    # networks:
+    #   zabbix-ipv4:
+    #     ipv4_address: 10.10.1.10
 
   zabbix-web-nginx-mysql:
     image: zabbix/zabbix-web-nginx-mysql:latest
@@ -54,8 +54,8 @@ services:
       - "${NGINX_PORT}:8080"
     volumes:
       - zabbix-web-data:/usr/share/zabbix
-    networks:
-      - zabbix-ipv4
+    # networks:
+    #   - zabbix-ipv4
 
   zabbix-agent:
     image: zabbix/zabbix-agent:latest
@@ -68,14 +68,14 @@ services:
       ZBX_SERVER_HOST: ${ZABBIX_HOST_NAME}
       ZBX_SERVER_PORT: ${ZABBIX_PORT}
       ZBX_SERVER_ACTIVE: zabbix-server
-    networks:
-      - zabbix-ipv4
+    # networks:
+    #   - zabbix-ipv4
 
-networks:
-  zabbix-ipv4:
-    ipam:
-      config:
-        - subnet: 10.10.1.0/24
+# networks:
+#   zabbix-ipv4:
+#     ipam:
+#       config:
+#         - subnet: 10.10.1.0/24
 
 volumes:
   mysql-data:

@@ -1,0 +1,6 @@
+---
+
+- hosts: vagrant01
+  gather_facts: true
+  roles:
+    - role: deploy_zabbix_agent
