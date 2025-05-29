@@ -13,6 +13,9 @@
 * plz run the command below:
 
   ```
+    sudo apt update
+  ```
+  ```
     ansible-playbook ansible/playbook.yml
   ```
 #
