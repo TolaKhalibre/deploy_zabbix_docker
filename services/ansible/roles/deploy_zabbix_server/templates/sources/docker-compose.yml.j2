@@ -1,0 +1,140 @@
+services:
+  traefik:
+    image: 'traefik:latest'
+{% if host_flag %}
+    command:
+      - "--log.level=WARN"
+      - "--accesslog=true"
+      - "--api.dashboard=true"
+      - "--api.insecure=true"
+      - "--ping=true"
+      - "--ping.entrypoint=ping"
+      - "--entryPoints.ping.address=:8082"
+      - "--entryPoints.web.address=:80"
+      - "--entryPoints.websecure.address=:443"
+      - "--providers.docker=true"
+      - "--providers.docker.endpoint=unix:///var/run/docker.sock"
+      - "--providers.docker.exposedByDefault=false"
+      - "--certificatesresolvers.letsencrypt.acme.tlschallenge=true"
+      # Email for Let's Encrypt (replace with yours)
+      - "--certificatesresolvers.letsencrypt.acme.email=infra@khalibre.com"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/etc/traefik/acme/acme.json"
+      - "--global.checkNewVersion=true"
+      - "--global.sendAnonymousUsage=false"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik-certificates:/etc/traefik/acme
+    ports:
+      - "80:80"
+      - "443:443"
+{% else %}
+    command:
+      - --api.insecure=true
+      - --providers.docker=true
+      - --entrypoints.web.address=:80
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+{% endif %}
+    networks:
+      - zabbix-network
+
+  zabbix-server-mysql:
+    image: mariadb:10.6
+    container_name: zabbix-server-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_USER_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    volumes:
+      - ./configs/mariadb:/etc/mysql/conf.d
+      - mysql-data:/var/lib/mysql/data
+      - ./my.cnf:/etc/mysql/conf.d/my.cnf
+    ports:
+      - "${MYSQL_PORT}:3306"
+    networks:
+      - zabbix-network
+
+  zabbix-server:
+    image: zabbix/zabbix-server-mysql:ubuntu-7.4.0
+    container_name: zabbix-server
+    environment:
+      DB_SERVER_HOST: ${MARIADB_HOST_NAME}
+      DB_SERVER_PORT: ${MYSQL_PORT}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_USER_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    depends_on:
+      - zabbix-server-mysql
+    ports:
+      - "${ZABBIX_PORT}:10051"
+    volumes:
+      - zabbix-server-data:/var/lib/zabbix
+      - zabbix-snmptraps-data:/var/lib/zabbix/snmptraps
+      - zabbix-export-data:/var/lib/zabbix/export
+    networks:
+      - zabbix-network
+
+  zabbix-web-nginx-mysql:
+    image: zabbix/zabbix-web-nginx-mysql:ubuntu-7.4.0
+    container_name: zabbix-web
+    depends_on:
+      - zabbix-server-mysql
+      - zabbix-server
+    environment:
+      DB_SERVER_HOST: ${MARIADB_HOST_NAME}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_USER_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      ZBX_SERVER_HOST: ${ZABBIX_HOST_NAME}
+      PHP_TZ: ${TIMEZONE}
+{% if host_flag %}
+    labels:
+      - "traefik.enable=true"
+      # Zabbix URL (replace with yours)
+      - "traefik.http.routers.zabbix.rule=Host(`monit.khalibre.com`)"
+      - "traefik.http.routers.zabbix.service=zabbix"
+      - "traefik.http.routers.zabbix.entrypoints=websecure"
+      - "traefik.http.services.zabbix.loadbalancer.server.port=8080"
+      - "traefik.http.routers.zabbix.tls=true"
+      - "traefik.http.routers.zabbix.tls.certresolver=letsencrypt"
+      - "traefik.http.services.zabbix.loadbalancer.passhostheader=true"
+      - "traefik.http.routers.zabbix.middlewares=compresstraefik"
+      - "traefik.http.middlewares.compresstraefik.compress=true"
+{% else %}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.zabbix.rule=Host(`zabbix.localhost`)"
+      - "traefik.http.services.zabbix.loadbalancer.server.port=8080"
+{% endif %}
+    volumes:
+      - ./configs/ssl:/etc/ssl/nginx:ro
+      - zabbix-web-data:/usr/share/zabbix
+    networks:
+      - zabbix-network
+
+  zabbix-agent:
+    image: zabbix/zabbix-agent:ubuntu-7.4.0
+    container_name: zabbix-agent
+    depends_on:
+      - zabbix-server
+    environment:
+      ZBX_HOSTNAME: "zabbix-server"
+      ZBX_SERVER_HOST: ${ZABBIX_HOST_NAME}
+      ZBX_SERVER_PORT: ${ZABBIX_PORT}
+      ZBX_SERVER_ACTIVE: zabbix-server
+    networks:
+      - zabbix-network
+
+networks:
+  zabbix-network:
+
+volumes:
+  mysql-data:
+  zabbix-server-data:
+  zabbix-snmptraps-data:
+  zabbix-export-data:
+  zabbix-web-data:

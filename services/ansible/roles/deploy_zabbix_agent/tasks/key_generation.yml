@@ -1,0 +1,22 @@
+---
+
+- name: Genernate pre-shared key
+  ansible.builtin.shell: "openssl rand -hex 32 > /etc/zabbix/zabbix_agent2.psk"
+  args:
+    creates: /etc/zabbix/zabbix_agent2.psk
+    executable: /bin/bash
+  become: true
+
+- name: Set permission to key file
+  ansible.builtin.file:
+    path: /etc/zabbix/zabbix_agent2.psk
+    owner: 1000
+    group: 1000
+    mode: '0644'
+  become: true
+
+- name: Restart zabbix agent2
+  ansible.builtin.systemd_service:
+    state: restarted
+    name: zabbix-agent2
+  become: true

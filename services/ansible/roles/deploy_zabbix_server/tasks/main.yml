@@ -1,0 +1,23 @@
+---
+
+- name: Verify zabbix project file
+  ansible.builtin.stat:
+    path: "{{ deploy_zabbix_server_directory }}"
+  register: zabbix_project
+
+- name: Stop Zabbix container
+  community.docker.docker_compose_v2:
+    project_src: "{{ deploy_zabbix_server_directory }}"
+    files: docker-compose.yml
+    state: stopped
+  when: zabbix_project.stat.exists
+
+- name: Remove directory of if zabbix project exists
+  ansible.builtin.import_tasks: remove_dir.yml
+  when: zabbix_project.stat.exists
+
+- name: Migration resource of zabbix-server
+  ansible.builtin.import_tasks: migration.yml
+
+- name: Start docker compose
+  ansible.builtin.import_tasks: deploy_zabbix_server.yml

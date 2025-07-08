@@ -1,0 +1,14 @@
+---
+
+deploy_zabbix_agent_file: zabbix-release_latest_7.2+{{ ansible_distribution | lower }}{{ ansible_distribution_version }}_all.deb
+deploy_zabbix_server_ip_address: 54.39.183.83
+deploy_zabbix_agent_ip_allow: 192.168.56.3
+deploy_zabbix_server_mariadb_hostname: zabbix-server-mysql
+deploy_zabbix_server_mariadb_username: zabbix
+deploy_zabbix_server_mariadb_root_pass: "{{ vault_deploy_zabbix_server_mariadb_root_password }}"
+deploy_zabbix_server_mariadb_user_pass: "{{ vault_deploy_zabbix_server_mariadb_user_password }}"
+deploy_zabbix_server_mariadb_database: zabbix
+deploy_zabbix_server_mariadb_port: 3306
+deploy_zabbix_server_port: 10051
+deploy_zabbix_server_hostname: zabbix-server
+deploy_zabbix_server_nginx_port: 8087 # nginx port

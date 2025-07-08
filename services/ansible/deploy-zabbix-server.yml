@@ -1,0 +1,7 @@
+---
+
+- name: Deploy zabbix server
+  hosts: localhost
+  gather_facts: false
+  roles:
+    - role: deploy_zabbix_server

@@ -1,0 +1,16 @@
+---
+
+- name: Remove docker compose in zabbix_project
+  ansible.builtin.file:
+    path: "{{ deploy_zabbix_server_directory }}/docker-compose.yml"
+    state: absent
+
+- name: Remove config file
+  ansible.builtin.file:
+    path: "{{ deploy_zabbix_server_directory }}/my.cnf"
+    state: absent
+
+- name: Remove .env file
+  ansible.builtin.file:
+    path: "{{ deploy_zabbix_server_directory }}/.env"
+    state: absent

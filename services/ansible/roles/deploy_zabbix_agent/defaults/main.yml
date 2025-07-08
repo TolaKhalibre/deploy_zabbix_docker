@@ -1,0 +1,7 @@
+---
+
+deploy_zabbix_agent_local_username: "{{ ansible_user }}"
+deploy_zabbix_agent_repo: https://repo.zabbix.com/zabbix/7.2/release/{{ ansible_distribution | lower }}/pool/main/z/zabbix-release/zabbix-release_latest_7.2+{{ ansible_distribution | lower }}{{ ansible_distribution_version }}_all.deb
+deploy_zabbix_agent_var_file: "{{ deploy_zabbix_agent_file }}"
+deploy_zabbix_agent_var_zabbix_server_ip_address: "{{ deploy_zabbix_server_ip_address }}"
+deploy_zabbix_agent_var_ip_allow: "{{ deploy_zabbix_agent_ip_allow }}"

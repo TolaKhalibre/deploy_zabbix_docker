@@ -1,0 +1,34 @@
+---
+
+- name: Download Zabbix 7.2 latest
+  ansible.builtin.get_url:
+    url: '{{ deploy_zabbix_agent_repo }}'
+    dest: /tmp/
+    mode: "0600"
+
+- name: Install zabbix agent file
+  ansible.builtin.apt:
+    deb: /tmp/{{ deploy_zabbix_agent_var_file }}
+  become: true
+
+- name: Apt-get update
+  ansible.builtin.apt:
+    update_cache: true
+  become: true
+
+- name: Install zabbix agent2
+  ansible.builtin.apt:
+    name: zabbix-agent2
+  become: true
+
+- name: Install zabbix agent2 plugins
+  ansible.builtin.apt:
+    name: zabbix-agent2-plugin-mssql
+  become: true
+
+- name: Configuration file to connect to zabbix server
+  ansible.builtin.template:
+    src: templates/zabbix_agent2.conf.j2
+    dest: /etc/zabbix/zabbix_agent2.conf
+    mode: "0600"
+  become: true

@@ -1,0 +1,14 @@
+---
+
+deploy_zabbix_server_local_username: "{{ ansible_user }}"
+deploy_zabbix_server_timezone: Asia/Phnom_Penh
+deploy_zabbix_server_var_mariadb_hostname: "{{ deploy_zabbix_server_mariadb_hostname }}"
+deploy_zabbix_server_var_mariadb_username: "{{ deploy_zabbix_server_mariadb_username }}"
+deploy_zabbix_server_var_root_pass: "{{ deploy_zabbix_server_mariadb_root_pass }}"
+deploy_zabbix_server_var_mariadb_user_pass: "{{ deploy_zabbix_server_mariadb_user_pass }}"
+deploy_zabbix_server_var_mariadb_database: "{{ deploy_zabbix_server_mariadb_database }}"
+deploy_zabbix_server_var_mariadb_port: "{{ deploy_zabbix_server_mariadb_port }}"
+deploy_zabbix_server_var_port: "{{ deploy_zabbix_server_port }}"
+deploy_zabbix_server_var_hostname: "{{ deploy_zabbix_server_hostname }}"
+deploy_zabbix_server_var_nginx_port: "{{ deploy_zabbix_server_nginx_port }}"
+deploy_zabbix_server_directory: ~/zabbix_project

@@ -1,0 +1,7 @@
+---
+
+- name: Start Zabbix container
+  community.docker.docker_compose_v2:
+    project_src: "{{ deploy_zabbix_server_directory }}"
+    files: docker-compose.yml
+    state: present

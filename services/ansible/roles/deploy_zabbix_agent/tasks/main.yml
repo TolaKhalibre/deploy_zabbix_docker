@@ -1,0 +1,13 @@
+---
+
+- name: Check if PSK file exists
+  ansible.builtin.stat:
+    path: /etc/zabbix/zabbix_agent2.psk
+  register: psk_file
+
+- name: Install zabbix-agent & configuration
+  ansible.builtin.import_tasks: installations.yml
+
+- name: Task for generate key
+  ansible.builtin.import_tasks: key_generation.yml
+  when: not psk_file.stat.exists
