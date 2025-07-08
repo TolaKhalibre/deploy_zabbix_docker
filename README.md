@@ -19,5 +19,3 @@
     ansible-playbook ansible/playbook.yml
   ```
 #
-## Unstallation Zabbix-agent 2 using Ansible
-> <code style="color : RED">[!NOTE]</code> Inprogress
